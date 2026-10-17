@@ -1,4 +1,4 @@
-# Scoop Bucket for TrailMark
+# 🔖 Scoop Bucket for TrailMark
 
 **Read what your AI writes. Write what it reads.**
 
