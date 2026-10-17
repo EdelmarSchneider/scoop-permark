@@ -17,13 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check latest TrailMark release and update manifest
+      - name: Check latest PerMark release and update manifest
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          CURRENT_VER=$(jq -r '.version' bucket/trailmark.json)
-          LATEST_TAG=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/EdelmarSchneider/trailmark/releases/latest | jq -r '.tag_name')
+          CURRENT_VER=$(jq -r '.version' bucket/permark.json)
+          LATEST_TAG=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/EdelmarSchneider/permark/releases/latest | jq -r '.tag_name')
           LATEST_VER="${LATEST_TAG#v}"
 
           echo "Current version: $CURRENT_VER"
@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
 
-          ASSET_URL="https://github.com/EdelmarSchneider/trailmark/releases/download/v${LATEST_VER}/TrailMark_${LATEST_VER}_x64-setup.exe"
+          ASSET_URL="https://github.com/EdelmarSchneider/permark/releases/download/v${LATEST_VER}/PerMark_${LATEST_VER}_x64-setup.exe"
           echo "Downloading $ASSET_URL ..."
           curl -fsSL "$ASSET_URL" -o /tmp/installer.exe
           NEW_HASH=$(sha256sum /tmp/installer.exe | awk '{print $1}')
@@ -51,11 +51,11 @@ jobs:
              --arg url "${ASSET_URL}#/dl.7z" \
              --arg hash "$NEW_HASH" \
              '.version = $ver | .architecture."64bit".url = $url | .architecture."64bit".hash = $hash' \
-             bucket/trailmark.json > bucket/trailmark.json.tmp
-          mv bucket/trailmark.json.tmp bucket/trailmark.json
+             bucket/permark.json > bucket/permark.json.tmp
+          mv bucket/permark.json.tmp bucket/permark.json
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bucket/trailmark.json
-          git commit -m "trailmark: Update to version ${LATEST_VER}"
+          git add bucket/permark.json
+          git commit -m "permark: Update to version ${LATEST_VER}"
           git push
