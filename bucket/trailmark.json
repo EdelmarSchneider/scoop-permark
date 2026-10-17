@@ -1,0 +1,29 @@
+{
+  "version": "0.5.5",
+  "description": "Read what your AI writes. Write what it reads. The desktop Markdown IDE where engineers and AI plan, formalize specs, and steer development—with live block diffs, inline MCP comments, visual editing, diagrams, and self-saving notes.",
+  "homepage": "https://edelmarschneider.github.io/trailmark/",
+  "license": "MIT|Apache-2.0",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/EdelmarSchneider/trailmark/releases/download/v0.5.5/TrailMark_0.5.5_x64-setup.exe#/dl.7z",
+      "hash": "89626af45057eb9a223e3e02b4e43d212834e811203d513483450e5289e87ba5"
+    }
+  },
+  "bin": "trailmark.exe",
+  "shortcuts": [
+    [
+      "trailmark.exe",
+      "TrailMark"
+    ]
+  ],
+  "checkver": {
+    "github": "https://github.com/EdelmarSchneider/trailmark"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/EdelmarSchneider/trailmark/releases/download/v$version/TrailMark_$version_x64-setup.exe#/dl.7z"
+      }
+    }
+  }
+}
