@@ -1,0 +1,61 @@
+name: Auto-Update Scoop Manifest
+
+on:
+  schedule:
+    - cron: "15 */6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [release-published]
+
+permissions:
+  contents: write
+
+jobs:
+  autoupdate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check latest TrailMark release and update manifest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          CURRENT_VER=$(jq -r '.version' bucket/trailmark.json)
+          LATEST_TAG=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/EdelmarSchneider/trailmark/releases/latest | jq -r '.tag_name')
+          LATEST_VER="${LATEST_TAG#v}"
+
+          echo "Current version: $CURRENT_VER"
+          echo "Latest version:  $LATEST_VER"
+
+          if [ -z "$LATEST_VER" ] || [ "$LATEST_VER" = "null" ]; then
+            echo "No release tag found."
+            exit 0
+          fi
+
+          if [ "$CURRENT_VER" = "$LATEST_VER" ]; then
+            echo "Already up to date."
+            exit 0
+          fi
+
+          ASSET_URL="https://github.com/EdelmarSchneider/trailmark/releases/download/v${LATEST_VER}/TrailMark_${LATEST_VER}_x64-setup.exe"
+          echo "Downloading $ASSET_URL ..."
+          curl -fsSL "$ASSET_URL" -o /tmp/installer.exe
+          NEW_HASH=$(sha256sum /tmp/installer.exe | awk '{print $1}')
+          rm -f /tmp/installer.exe
+
+          echo "New SHA256: $NEW_HASH"
+
+          jq --arg ver "$LATEST_VER" \
+             --arg url "${ASSET_URL}#/dl.7z" \
+             --arg hash "$NEW_HASH" \
+             '.version = $ver | .architecture."64bit".url = $url | .architecture."64bit".hash = $hash' \
+             bucket/trailmark.json > bucket/trailmark.json.tmp
+          mv bucket/trailmark.json.tmp bucket/trailmark.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bucket/trailmark.json
+          git commit -m "trailmark: Update to version ${LATEST_VER}"
+          git push
