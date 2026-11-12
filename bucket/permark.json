@@ -1,12 +1,12 @@
 {
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Read what your AI writes. Write what it reads. A free, open-source Markdown app: open any .md as a clean page, keep notes that save themselves, and follow, review and steer what your AI agents write. Formerly TrailMark.",
   "homepage": "https://edelmarschneider.github.io/permark/",
   "license": "MIT|Apache-2.0",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/EdelmarSchneider/permark/releases/download/v0.10.0/PerMark_0.10.0_x64-setup.exe#/dl.7z",
-      "hash": "bb01b481f73c8ed02527a90c44c5d263190d0f6151ad76b024a397c7967b4ae3"
+      "url": "https://github.com/EdelmarSchneider/permark/releases/download/v0.11.0/PerMark_0.11.0_x64-setup.exe#/dl.7z",
+      "hash": "02a80942a6174b6de8fbe28af0c03d15807b182980a2c1a222e06201a3ad8d61"
     }
   },
   "bin": "permark.exe",
